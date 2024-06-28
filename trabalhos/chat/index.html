@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONEXÃO MQTT</title>
+    <style>
+      body{
+        display: flex;
+        align-items: center;
+        flex-direction:column;
+        background-color: rgb(168, 154, 25);
+      }
+      .resposta
+      {
+        width: 1200px;
+        height: 500px;
+        background-color: rgb(190, 190, 190);
+        overflow-y: scroll;
+        border-radius: 20px;
+
+      }
+      .prompt{
+        font-size: 35px;
+        border-radius: 20px;
+
+      }
+      input{
+        font-size: 35px;
+        border-radius: 20px;
+
+      }
+      button{
+        font-size: 25px;
+        border-radius: 20px;
+
+
+      }
+
+    </style>
+</head>
+<body>
+  
+<div class="resposta" id="resposta"> </div>
+<br> <br>
+<div class="prompt">
+  Apelido:  <input type="text" class="apelido" id="apelido" size="5">
+  Mensagem: <input type="text" class="texto" id="texto"   size="40"> 
+  <button onclick="Enviar();">Enviar Texto</button>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"> </script>
+<script>
+
+  topico = "chatsecreto"
+  client = new Paho.MQTT.Client("broker.hivemq.com", Number(8000), "")
+
+  client.connect( {onSuccess:Conectou} )
+
+
+  function Conectou() {
+    client.subscribe(topico)
+    message = new Paho.MQTT.Message('')
+    message.destinationName = topico
+  }
+
+
+  client.onConnectionLost = Conexao_Perdida
+  client.onMessageArrived = Mensagem_Chegou
+
+
+  function Conexao_Perdida(responseObject) {
+    if (responseObject.errorCode !== 0) {
+      resposta.innerHTML += "Desconectado: " + responseObject.errorMessage
+    }
+  }
+
+
+  function Mensagem_Chegou(message) {
+      resposta.innerHTML += "<br>"
+      resposta.innerHTML += message.payloadString
+  }
+
+
+  function Enviar(){
+              valor ='<img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fbr.freepik.com%2Ffotos%2Fperfil-masculino-anime&psig=AOvVaw1syPwjaU8Su16zmSXEd_AC&ust=1719543281676000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJCb3YXk-oYDFQAAAAAdAAAAABAE" class="apelidoimg" width="25px" height="25px">' +  apelido.value + ": " + texto.value
+              message = new Paho.MQTT.Message(valor)
+              message.destinationName = topico
+              client.send(message)
+          }
+
+
+</script>
+
+</html>

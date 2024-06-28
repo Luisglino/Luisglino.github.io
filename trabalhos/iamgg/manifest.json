@@ -1,0 +1,17 @@
+{
+    "name": "Imagens_Infinitas",
+    "short_name": "II",
+    "start_url" : "/?home=true",
+    "icons": [
+      {
+        "src": "icone.png",
+        "sizes": "360x360",
+        "type": "image/png",
+        "purpose": "maskable any"
+      }
+    ],
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "display": "fullscreen",
+    "orientation": "portrati"
+}
